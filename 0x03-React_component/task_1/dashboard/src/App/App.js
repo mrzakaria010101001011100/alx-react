@@ -1,4 +1,3 @@
-#!/usr/bin/node
 import React from "react";
 import PropTypes from "prop-types";
 import Notifications from "../Notifications/Notifications";
