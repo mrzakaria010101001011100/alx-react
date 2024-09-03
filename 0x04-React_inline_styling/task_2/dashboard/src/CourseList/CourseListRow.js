@@ -1,57 +1,70 @@
-#!/usr/bin/node
-import React, { Fragment } from 'react';
+import React, { Fragment }from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
-import CourseListRow from './CourseListRow';
-import CourseShape from './CourseShape';
-import './CourseList.css';
 
-function CourseList({ listCourses }) {
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+	const styleRow = { backgroundColor: '#f5f5f5ab' };
+	const styleHeaderRow = { backgroundColor: '#deb5b545' };
+
+	let myElement;
+	if (isHeader === true) {
+		if (textSecondCell === null) {
+			myElement = <th colSpan="2" className={css(styles.headerRow)}>{textFirstCell}</th>;
+		} else {
+			myElement = (
+				<Fragment>
+					<th className={css(styles.defaultRow)}>{textFirstCell}</th>
+					<th className={css(styles.defaultRow)}>{textSecondCell}</th>
+				</Fragment>
+			);
+		}
+	} else {
+		myElement = (
+			<Fragment>
+				<td>{textFirstCell}</td>
+				<td>{textSecondCell}</td>
+			</Fragment>
+		);
+	}
+
+	let stylesBackground;
+
+	if (isHeader) {
+		stylesBackground = styleHeaderRow;
+	} else {
+		stylesBackground = styleRow;
+	}
 	return (
-		<table id='CourseList' className={css(styles.CourseList)}>
-			<thead>
-				<CourseListRow textFirstCell="Available courses" isHeader={true} />
-				<CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true} />
-			</thead>
-			<tbody>
-				{
-					listCourses.length === 0 && (
-						<CourseListRow
-							textFirstCell="No course available yet"
-							isHeader={false}
-						/>
-					)
-				}
-				{
-					listCourses && listCourses.map((newCourse) => (
-						<CourseListRow 
-							key={newCourse.id}
-							textFirstCell={newCourse.name}
-							textSecondCell={newCourse.credit}
-							isHeader={false}
-						/>
-					))
-				}
-			</tbody>
-		</table>
+		<tr style={stylesBackground}>{myElement}</tr>
 	);
 }
 
 const styles = StyleSheet.create({
-	CourseList: {
-		width: '90%',
-		margin: '50px auto',
-		border: '1px solid lightgray',
-		borderCollapse: 'collapse'
+	headerRow: {
+		fontfamily: 'Arial, Helvetica, sans-serif',
+		textAlign: 'center'
+	},
+
+	defaultRow: {
+		fontfamily: 'Arial, Helvetica, sans-serif',
+		borderbottom: '1px solid lightgray',
+		height: '25px',
+		textAlign: 'left'
 	}
 });
 
-CourseList.propTypes = {
-	listCourses: PropTypes.arrayOf(CourseShape)
+CourseListRow.propTypes = {
+	isHeader: PropTypes.bool,
+	textFirstCell: PropTypes.string.isRequired,
+	textSecondCell: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number
+	])
 };
 
-CourseList.defaultProps = {
-	listCourses: []
+CourseListRow.defaultProps = {
+	isHeader: false,
+	textSecondCell: null
 };
 
-export default CourseList;
+export default CourseListRow;
